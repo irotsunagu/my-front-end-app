@@ -37,3 +37,9 @@
     transform: rotate(360deg);
   }
 }
+
+.popup-content {
+  max-width: 400px; /* ポップアップの最大幅を300pxに設定 */
+  max-height: 300px; /* ポップアップの最大高さを400pxに設定 */
+  overflow: auto; /* コンテンツがオーバーフローした場合はスクロールバーを表示 */
+}

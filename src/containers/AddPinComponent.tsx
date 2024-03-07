@@ -5,6 +5,7 @@ import PinData from '../models/PinData';
 import { addPin } from '../services/PinApi';
 import customMarkerIcon from '../utils/customMarkerIcon';
 import { Button, TextField } from '@mui/material';
+import '../App.css'; 
 
 /**
  * propsの定義
@@ -94,7 +95,7 @@ export const AddPinComponent: React.FC<propIf> = ({ reload }) => {
       <Marker position={position} icon={customMarkerIcon} ref={markerRef} // MarkerにRefを設定
       >
         <Popup>
-          <div>
+          <div className="popup-content">
             <label><TextField id="standard-basic" label="タイトル" variant="standard" value={pin.title} onChange={(e) => setPin({ ...pin, title: e.target.value })} /></label><br />
             <label><TextField id="standard-multiline-flexible" label="説明" multiline maxRows={2} variant="standard" value={pin.description} onChange={(e) => setPin({ ...pin, description: e.target.value })} /></label><br />
             <label><TextField id="standard-basic" label="カテゴリ" variant="standard" value={pin.category} onChange={(e) => setPin({ ...pin, category: e.target.value })} /></label><br />

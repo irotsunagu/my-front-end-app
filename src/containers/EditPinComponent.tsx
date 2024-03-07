@@ -6,6 +6,7 @@ import PinData from '../models/PinData';
 import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import { IconButton, Button, TextField } from '@mui/material';
+import '../App.css'; 
 
 /**
  * propsの定義
@@ -52,7 +53,7 @@ const EditPinComponent: React.FC<propIf> = ({pin, reload }) => {
     reload();
     // 初期化
     handleInit();
-  };
+  }; 
 
   // 削除ボタン=>削除ボタン押下後の更新処理（API呼び出し）
   const handleDelete = async () => {
@@ -86,7 +87,7 @@ const EditPinComponent: React.FC<propIf> = ({pin, reload }) => {
   if (editMode) {
     return (
       <Popup> 
-        <div>
+        <div className="popup-content">
           <label><TextField id="standard-basic" label="タイトル" variant="standard" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} /></label><br/><br/>
           <label><TextField id="standard-multiline-flexible" label="説明" multiline maxRows={2} variant="standard" value={editDescription} onChange={(e) => setEditDescription(e.target.value)} /></label><br/><br/>
           <label><TextField id="standard-basic" label="カテゴリ" variant="standard" value={editCategory} onChange={(e) => setEditCategory(e.target.value)} /></label><br/><br/>
@@ -102,7 +103,7 @@ const EditPinComponent: React.FC<propIf> = ({pin, reload }) => {
   if (confirmDelete) {
     return (
       <Popup>
-        <div>
+        <div className="popup-content">
           <h2>このピンを削除しますか？</h2>
           <Button variant="outlined" color="error" onClick={handleDelete}>削除</Button>
           <Button variant="text" onClick={handleCancel}>キャンセル</Button>
@@ -114,7 +115,7 @@ const EditPinComponent: React.FC<propIf> = ({pin, reload }) => {
   // 登録済みのピン押下後のポップアップ
   return (
     <Popup>
-      <div>
+      <div className="popup-content">
         <h2>{pin.title}</h2>
         <h4>{pin.description}</h4>
         {pin.imageUrl && <img src={pin.imageUrl} alt={pin.title} style={{ maxWidth: '100px' }} />}<br />
