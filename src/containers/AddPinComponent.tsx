@@ -5,7 +5,6 @@ import PinData from '../models/PinData';
 import { addPin } from '../services/PinApi';
 import customMarkerIcon from '../utils/customMarkerIcon';
 import { Button, TextField } from '@mui/material';
-import '../App.css'; 
 
 /**
  * propsの定義
@@ -25,17 +24,21 @@ interface propIf {
 export const AddPinComponent: React.FC<propIf> = ({ reload }) => {
   // ピン位置の状態保持
   const [position, setPosition] = useState<LatLng | null>(null);
-  // pinの初期設定
-  const [pin, setPin] = useState<PinData>({
-    id: '',
-    title: '',
-    description: '',
-    latitude: 0,
-    longitude: 0,
-    category: '',
-    imageUrl: '',
-  });
-  // マーカーへの参照
+  // 各ピン項目の情報の状態を管理
+  const [editTitle, setEditTitle] = useState(' ');
+  const [editDescription, setEditDescription] = useState(' ');
+  const [editCategory, setEditCategory] = useState(' ');
+  const [editImageUrl, setEditImageUrl] = useState(' ');
+
+  // 初期化
+  const handleInit = () => {
+    setEditTitle("");
+    setEditDescription("");
+    setEditCategory("");
+    setEditImageUrl("");
+  };
+
+   // マーカーへの参照
   const markerRef = useRef<L.Marker | null>(null);
 
   // クリックにより位置情報を取得
@@ -57,21 +60,22 @@ export const AddPinComponent: React.FC<propIf> = ({ reload }) => {
     e.stopPropagation();
     // 初期化
     setPosition(null); // フォームを閉じる
-    setPin({ id: "", title: "", description: "", latitude: 0, longitude: 0, category: "", imageUrl: "" })
+    handleInit();
   }
 
   // 登録APIを呼び出すための処理
   const handleSave = async () => {
-    if (position && pin) {
+    if (position) {
       const savePin: PinData = {
         id: "",
-        title: pin.title,
-        description: pin.description,
+        title: editTitle,
+        description: editDescription,
         latitude: position.lat,
         longitude: position.lng,
-        category: pin.category,
-        imageUrl: pin.imageUrl
+        category: editCategory,
+        imageUrl: editImageUrl
       }
+
       // 登録APIを呼び出し
       await addPin(savePin)
         .then(responseData => { // 成功した場合の処理
@@ -80,14 +84,12 @@ export const AddPinComponent: React.FC<propIf> = ({ reload }) => {
         .catch(error => { // エラーが発生した場合の処理
           console.error('ピンの追加に失敗しました。', error);
         });
-      setPosition(null); // フォームを閉じる
+      
       // 初期化
-      setPin({ id: "", title: "", description: "", latitude: 0, longitude: 0, category: "", imageUrl: "" })
+      setPosition(null); // フォームを閉じる
+      handleInit();
     }
   };
-
-  // もしpinがundefinedの可能性があるなら、pinを使用する前にチェックする
-  if (!pin) return null;
 
   // positionがnullでない場合（＝クリックしてpositionに何かしら値が入った状態）、ピンとポップアップを返す
   return position === null ? null : (
@@ -95,11 +97,11 @@ export const AddPinComponent: React.FC<propIf> = ({ reload }) => {
       <Marker position={position} icon={customMarkerIcon} ref={markerRef} // MarkerにRefを設定
       >
         <Popup>
-          <div className="popup-content">
-            <label><TextField id="standard-basic" label="タイトル" variant="standard" value={pin.title} onChange={(e) => setPin({ ...pin, title: e.target.value })} /></label><br />
-            <label><TextField id="standard-multiline-flexible" label="説明" multiline maxRows={2} variant="standard" value={pin.description} onChange={(e) => setPin({ ...pin, description: e.target.value })} /></label><br />
-            <label><TextField id="standard-basic" label="カテゴリ" variant="standard" value={pin.category} onChange={(e) => setPin({ ...pin, category: e.target.value })} /></label><br />
-            <label><TextField id="standard-basic" label="画像URL" variant="standard" value={pin.imageUrl} onChange={(e) => setPin({ ...pin, imageUrl: e.target.value })} /></label><br />
+          <div>
+            <label><TextField id="standard-basic" label="タイトル" variant="standard" value={editTitle} onChange={(e) => setEditTitle( e.target.value )} /></label><br/><br/>
+            <label><TextField id="standard-basic" label="説明" variant="standard" value={editDescription} onChange={(e) => setEditDescription(e.target.value)} /></label><br/><br/>
+            <label><TextField id="standard-basic" label="カテゴリ" variant="standard" value={editCategory} onChange={(e) => setEditCategory(e.target.value)} /></label><br/><br/>
+            <label><TextField id="standard-basic" label="画像URL" variant="standard" value={editImageUrl} onChange={(e) => setEditImageUrl(e.target.value)} /></label><br/><br/>
             <Button variant="outlined" color="success" onClick={handleSave}>保存</Button>
             <Button variant="text" onClick={handleCancel}>キャンセル</Button>
           </div>
